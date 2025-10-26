@@ -1,0 +1,91 @@
+import os
+import json
+
+DATA_FILE = "grades.txt"
+
+def load_data():
+    if not os.path.exists(DATA_FILE):
+        return {}
+    with open(DATA_FILE, "r") as file:
+        return json.load(file)
+
+def save_data(data):
+    with open(DATA_FILE, "w") as file:
+        json.dump(data, file, indent=4)
+
+def add_student(data):
+    name = input("Enter student name: ").title()
+    if name in data:
+        print("Student already exists.")
+        return
+    grades = input("Enter grades separated by spaces: ").split()
+    data[name] = [float(g) for g in grades]
+    save_data(data)
+    print(f"{name} added successfully!\n")
+
+def view_students(data):
+    if not data:
+        print("No students found.\n")
+        return
+    for name, grades in data.items():
+        print(f"{name}: {grades}")
+    print()
+
+def update_student(data):
+    name = input("Enter student name to update: ").title()
+    if name not in data:
+        print("Student not found.\n")
+        return
+    grades = input("Enter new grades separated by spaces: ").split()
+    data[name] = [float(g) for g in grades]
+    save_data(data)
+    print(f"{name}'s grades updated.\n")
+
+def delete_student(data):
+    name = input("Enter student name to delete: ").title()
+    if name not in data:
+        print("Student not found.\n")
+        return
+    del data[name]
+    save_data(data)
+    print(f"{name} removed.\n")
+
+def calculate_average(data):
+    name = input("Enter student name: ").title()
+    if name not in data:
+        print("Student not found.\n")
+        return
+    grades = data[name]
+    average = sum(grades) / len(grades)
+    print(f"{name}'s average grade: {average:.2f}\n")
+
+def main():
+    data = load_data()
+    while True:
+        print("====== Student Grade Management System ======")
+        print("1. Add Student")
+        print("2. View Students")
+        print("3. Update Student")
+        print("4. Delete Student")
+        print("5. Calculate Average")
+        print("6. Exit")
+        choice = input("Enter choice: ")
+
+        if choice == "1":
+            add_student(data)
+        elif choice == "2":
+            view_students(data)
+        elif choice == "3":
+            update_student(data)
+        elif choice == "4":
+            delete_student(data)
+        elif choice == "5":
+            calculate_average(data)
+        elif choice == "6":
+            print("Exiting program... Goodbye!")
+            break
+        else:
+            print("Invalid choice. Try again.\n")
+
+if __name__ == "__main__":
+    main()
